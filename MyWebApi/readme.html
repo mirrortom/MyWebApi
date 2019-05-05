@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <title>mywebapi说明</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .page {
+      display: grid;
+      grid-template-columns: 210px auto;
+      min-height: 100vh;
+    }
+
+    .menu {
+      position:sticky;
+      top:80px;
+      margin-top: 60px;
+    }
+
+    .content {
+      padding: 30px;
+      color: #333333;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div>
+      <ul class="menu">
+        <li><a href="#desc">简介</a></li>
+        <li><a href="#create">实现</a></li>
+        <li><a href="#install">部署</a></li>
+        <li><a href="#demo">示例</a></li>
+      </ul>
+    </div>
+    <div class="content">
+      <div id="desc" title="简介">
+        <h1>简介</h1>
+        <h3>基于asp.net的IHttpHandler对象的webapi实现.用dotnet类库项目改装的webapi项目.</h3>
+        <h4>原理</h4>
+        <p>一般要处理http请求的程序,都要有监听请求,分析请求地址和参数,响应请求的功能.</p>
+        <p>经典的asp.net程序,提供了IHttphandler接口,可以实现自定义的处理程序.在asp.net管道事件中,第7个事件和第11事件的工作分别是,请求处理器工场指定处理类和处理程序响应处理.</p>
+        <p>实现IHttpHandlerFactory和IHttpHandler,就能自定义这两个事件的处理过程.主要在IHttpHandler,它分析url,然后指定具体类和方法.</p>
+        <p>至于监听,这里不管,交给iis了.由于是基于.net framework的程序,所以也只考虑在IIS中运行.</p>
+      </div>
+      <div id="create">
+        <h1>实现</h1>
+        <h3>立即建立这个项目</h3>
+        <ul>
+          <li>用VS2017建一个.net framework的类库项目.建两个类 AdministerHandlerFactory 和 ApiHandler</li>
+          <li>AdministerHandlerFactory 可以加一些处理跨域代码</li>
+          <li>ApiHandler主要工作是分析url,然后找到对应的类和方法,执行方法就是处理了请求.</li>
+          <li>ApiBase是个辅助类,提供一些便利方法.如取参数,返回结果等</li>
+          <li>[HTTPPOST][HTTPGET][HTTPALL]用于贴在方法上的特性,用于实现一些简单功能,例如区别GET或者POST.不是必要的.</li>
+          <li>web.config这个是iis下此项目的配置文件,主要是配置一个URL映射关系.关键是添加一个处理程序映射,将上面的AdministerHandler类添加进去.</li>
+        </ul>
+        <h3>一些约定</h3>
+        <ul>
+          <li>上述工作弄好之后,就能添加API了.就是添加一个普通的类,做一些约定后就能被访问到了.</li>
+          <li>类名以Api结尾</li>
+          <li>类要继承ApiBase</li>
+          <li>类的方法上要贴上特性</li>
+        </ul>
+      </div>
+      <div id="install" title="部署"></div>
+      <h1>部署</h1>
+      <ul>
+        <li>生成类库项目</li>
+        <li>到IIS新建网站,选.net4.0集成.</li>
+        <li>将项目编译的dll文件复制到网站根目录下的/bin文件夹下.再将web.config复制到根目录下.</li>
+        <li>一个精减易用的webapi工具就完成了.</li>
+      </ul>
+      <div id="demo" title="示例"></div>
+      <h1>示例</h1>
+      <p>/test/index 这个url调用的是test类的index方法</p>
+      <a href="/test/index" target="_blank">调用</a>
+
+      <p>/api/testns/index 这个url调用的是testns的index方法,api是testns类的命名空间.这个功能可以将API分类(文件夹)</p>
+      <a href="/api/testns/index" target="_blank">调用</a>
+
+      <p>/rejson/index 获得一个json返回值</p>
+      <a href="/rejson/index" target="_blank">调用</a>
+
+      <p>/rejson/paraget?name=mywebapi&info=testinfo 传get参数后返回所传的参数</p>
+      <a href="/rejson/paraget?name=mywebapi&info=testinfo" target="_blank">调用</a>
+
+      <p>/rejson/paraform 传表单参数后返回所传的参数</p>
+      <form action="/rejson/paraform" method="post">
+        form1<input type="text" name="form1" value="mywebapi" />
+        form2<input type="text" name="form2" value="testinfo" />
+        <input type="submit" value="提交" formtarget="_blank" />
+      </form>
+
+      <p>/rejson/parajson 传参数,从inputstream里获取</p>
+      <form action="/rejson/parajson" method="post" enctype="text/plain">
+        json<textarea name="json">{name:"mywebapi",info:"testinfo"}</textarea>
+        <input type="submit" value="提交" formtarget="_blank" />
+      </form>
+    </div>
+  </div>
+</body>
+</html>
