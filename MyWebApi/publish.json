@@ -1,8 +1,0 @@
-﻿{
-    "publishDir": "E:/WWWROOT/publisher",
-    // 发布前删除发布目录所有内容
-    "emptyPublishDir": "true",
-    "allowExts": [ ".htm", ".html", ".cshtml", ".config", ".js", ".css", ".json", ".jpg", ".jpeg", ".gif", ".png", ".bmp", ".woff", ".woff2", ".ttf", ".svg", ".eot", ".otf" ],
-    // 不允许发布的文件扩展名
-    "denyExts": [ "layout.cshtml", "part.cshtml", "part.js", "part.css" ]
-}
