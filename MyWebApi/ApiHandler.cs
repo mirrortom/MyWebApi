@@ -30,7 +30,7 @@ namespace MyWebApi
 
             // 类名和方法名:类名全称是- 程序集名.[命名空间].类名WebApi(约定后缀)
             // 命名空间: url拆分后,0位是命名空间,如果只有两段,则没有命名空间(只有当前程序集的默认命名空间)
-            // 后缀约定: 为了统一书写,一个成为api的类,结尾为WebApi.例如: UserWebApi
+            // 后缀约定: 为了统一书写,一个成为api的类,结尾为Api.例如: UserApi
 
             string apiClass = "", apiMethod = "";
             if (urlparts.Length < 4)
