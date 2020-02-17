@@ -62,11 +62,11 @@ namespace MyWebApi
 
             // 检查方法是否贴有特性HTTPPOST/HTTPGET/HTTPALL. 例如[HTTPPOST],只响应POST请求.
             // 特性约定:做为API的方法需要贴上三个特性中的一个
-            if (!this.AttributeCheck(context, webapiMethod, workapi))
+            if (!this.AttributeCheck(context, webapiMethod))
                 throw new HttpException($"无法响应请求.方法无必要特性!方法定义{apiClass}.{apiMethod}");
 
             // 如果不需要权限,注释掉.
-            if (!this.PowerCheck(context, apiClass, apiMethod))
+            if (!this.PowerCheck(context, webapiMethod, webapiT))
                 throw new HttpException($"Access Denied!方法定义{apiClass}.{apiMethod}");
 
             // 执行方法
@@ -76,11 +76,17 @@ namespace MyWebApi
         /// 接口权限判断
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="clsName"></param>
-        /// <param name="method"></param>
+        /// <param name="webapiMethod"></param>
+        /// <param name="webapiClass"></param>
         /// <returns></returns>
-        private bool PowerCheck(HttpContext context, string clsName, string method)
+        private bool PowerCheck(HttpContext context, MethodInfo webapiMethod, Type webapiClass)
         {
+            //string token = context.Request.Headers["Auth"].ToString();
+            if (Attribute.IsDefined(webapiClass, typeof(AUTHAttribute)) ||
+                Attribute.IsDefined(webapiMethod, typeof(AUTHAttribute)))
+            {
+                return true;
+            }
             return true;
         }
         /// <summary>
@@ -88,9 +94,8 @@ namespace MyWebApi
         /// 并非必要,只是为了加一个功能,让贴了特性的方法才能被访问.没贴的当内部方法
         /// </summary>
         /// <param name="webapiMethod">要检查的接口方法</param>
-        /// <param name="workapi">所在接口实例</param>
         /// <returns></returns>
-        private bool AttributeCheck(HttpContext context, MethodInfo webapiMethod, ApiBase workapi)
+        private bool AttributeCheck(HttpContext context, MethodInfo webapiMethod)
         {
             string httpMethod = context.Request.HttpMethod.ToUpper();
             if (httpMethod == "POST" && Attribute.IsDefined(webapiMethod, typeof(HTTPPOSTAttribute)))
@@ -108,9 +113,12 @@ namespace MyWebApi
             else
             {
                 return false;
-
             }
         }
+    }
+    class AUTHAttribute : Attribute
+    {
+
     }
     class HTTPPOSTAttribute : Attribute
     {
