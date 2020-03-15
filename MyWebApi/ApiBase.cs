@@ -130,20 +130,21 @@ namespace MyWebApi
             string json = Encoding.UTF8.GetString(byts);
             return json.Trim();
         }
-        
+
         #endregion
 
         #region response返回各种结果形式
 
         /// <summary>
-        /// 返回JSON格式数据
+        /// 返回JSON格式数据.obj如果是字符串,则视为json格式字符串直接返回.
         /// </summary>
         /// <param name="obj"></param>
         protected void Json(object obj)
         {
             this.Response.ContentType = "application/json";
             this.Response.Charset = "UTF-8";
-            string jsonstr = JsonConvert.SerializeObject(obj);
+            string jsonstr = obj.GetType() == typeof(string)
+                ? obj.ToString() : JsonConvert.SerializeObject(obj);
             this.Response.Write(jsonstr);
         }
         /// <summary>
