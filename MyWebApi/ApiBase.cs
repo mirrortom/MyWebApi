@@ -81,6 +81,24 @@ namespace MyWebApi
             return obj;
         }
         /// <summary>
+        /// 获取GET参数,并且转为字典类型
+        /// 无参数时返回空字典
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Dictionary<string, object> ParaDictGET()
+        {
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+            foreach (string key in this.Request.QueryString.Keys)
+            {
+                var values = this.Request.QueryString[key];
+                if (values.Length > 1)
+                    dict.Add(key, values);
+                else
+                    dict.Add(key, values.FirstOrDefault());
+            }
+            return dict;
+        }
+        /// <summary>
         /// 获取GET参数,并且转为指定类型
         /// 无参数时返回T的实例
         /// </summary>
@@ -105,6 +123,24 @@ namespace MyWebApi
                 ((IDictionary<string, object>)obj).Add(key, this.Request.Form.Get(key));
             }
             return obj;
+        }
+        /// <summary>
+        /// 获取Form参数,并且转为字典类型
+        /// 无参数时返回空字典
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Dictionary<string, object> ParaDictForm()
+        {
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+            foreach (string key in this.Request.Form.Keys)
+            {
+                var values = this.Request.Form[key];
+                if (values.Length > 1)
+                    dict.Add(key, values);
+                else
+                    dict.Add(key, values.FirstOrDefault());
+            }
+            return dict;
         }
         /// <summary>
         /// 获取form参数,并且转为指定类型
